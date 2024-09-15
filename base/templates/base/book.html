@@ -1,0 +1,56 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<section class="booking-pc">
+
+<div class="club-container">
+    <label for="club">Choose a tariff plan:</label>
+    <select id="club">
+      <option value="10">1h - $10/hour</option>
+      <option value="12">2h - $12/hour</option>
+      <option value="15">3h - $15/hour</option>
+    </select>
+  </div>
+
+  <ul class="showcase">
+    <li>
+      <div class="seat"></div>
+      <small>N/A</small>
+    </li>
+    <li>
+      <div class="seat selected"></div>
+      <small>Selected</small>
+    </li>
+    <li>
+      <div class="seat occupied"></div>
+      <small>Occupied</small>
+    </li>
+  </ul>
+
+  <div class="container">
+    <div class="section-container">
+      <h2>VIP Section</h2>
+      <div id="vip-seats"></div>
+    </div>
+
+    <div class="section-container">
+      <h2>Standard Section</h2>
+      <div id="standard-seats"></div>
+    </div>
+
+    <div class="section-container">
+      <h2>Premium Section</h2>
+      <div id="premium-seats"></div>
+    </div>
+  </div>
+
+  <p class="text">
+    You have selected <span id="count">0</span> seats for a total price of $<span id="total">0</span>
+  </p>
+  <button class="btn-book">Book Now</button>
+
+</section>
+
+
+{% endblock %}
