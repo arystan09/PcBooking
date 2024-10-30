@@ -34,3 +34,11 @@ def login_user(request):
                 return redirect('home')
 
     return render(request, 'base/login.html', {'form': form})
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('login')
+
+def user_profile(request):
+    return render(request, 'base/user_profile.html')

@@ -1,4 +1,4 @@
-{% extends 'main.html' %}
+{% extends 'base/main.html' %}
 
 {%block content%}
 <h1>Login</h1>
@@ -11,4 +11,6 @@
         {%endfor%}
         <button type="submit">Login</button>
     </form>
+    <p>Don't have account?</p>
+    <button><a href="{%url 'register'%}">Register</a></button>
 {%endblock%}

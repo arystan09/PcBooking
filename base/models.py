@@ -8,7 +8,7 @@ class Role(models.Model):
         return self.name
 
 class User(AbstractUser):
-    # name = models.CharField(max_length=100)
+    
     
     phone_number = models.CharField(max_length=15, blank=True, null=True,unique=True,verbose_name="Номер Телефона")
     role_id = models.ForeignKey(Role, on_delete=models.CASCADE, blank=True, null=True)
