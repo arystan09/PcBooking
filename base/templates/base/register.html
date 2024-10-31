@@ -1,16 +1,28 @@
 {% extends 'base/main.html' %}
+{% load static %}
 
-{%block content%}
-    <h1>Registration</h1>
-    <form method="post">
-        {% csrf_token %}
-    
-        {%for f in form%}
-        <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{f}}</p>
-        <div class="form-error">{{f.errors}}</div>
-        {%endfor%}
-        <button type="submit">Registration</button>
-    </form>
-    <p>Already have account?</p>
-    <button><a href="{%url 'login'%}">Login</a></button>
-{%endblock%}
+{% comment %} {% block css %}
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+{% endblock %} {% endcomment %}
+
+{% block title %}Registration{% endblock %}
+{% block content %}
+<div class="page-wrapper">
+    <div class="register-container">
+        <h1>Registration</h1>
+        <form method="post">
+            {% csrf_token %}
+            {% for f in form %}
+                <div class="form-group">
+                    <label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}:</label>
+                    {{ f }}
+                    <div class="form-error">{{ f.errors }}</div>
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn-register2">Register</button>
+        </form>
+        <p class="login-prompt">Already have an account?</p>
+        <a href="{% url 'login' %}" class="btn-login-link">Login</a>
+    </div>
+</div>
+{% endblock %}

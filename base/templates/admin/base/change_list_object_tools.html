@@ -1,0 +1,16 @@
+{% load i18n admin_urls %}
+<!--adding "Парсинг Графика" button-->
+{% block object-tools-items %}
+  {% if has_add_permission %}
+  <li>
+    {% url cl.opts|admin_urlname:'add' as add_url %}
+    <a href="{% add_preserved_filters add_url is_popup to_field %}" class="addlink">
+      {% blocktranslate with cl.opts.verbose_name as name %}Add {{ name }}{% endblocktranslate %}
+    </a>
+    {%if request.path == '/admin/base/club/' %}
+        <a href="{% url 'upload_club_file' %}" class="addlink">Добавить через файл</a>
+        
+    {%endif%}
+  </li>
+  {% endif %}
+{% endblock %}

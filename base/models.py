@@ -9,68 +9,76 @@ class Role(models.Model):
 
 class User(AbstractUser):
     
-    
     phone_number = models.CharField(max_length=15, blank=True, null=True,unique=True,verbose_name="Номер Телефона")
-    role_id = models.ForeignKey(Role, on_delete=models.CASCADE, blank=True, null=True)
+    role_id = models.ForeignKey(Role, on_delete=models.CASCADE, blank=True, null=True,verbose_name="Роль")
 
     def __str__(self):
-        return self.username + ' ' +self.first_name + ' ' + self.last_name
+        return self.first_name + ' ' + self.last_name
 
 class Club(models.Model):
     name = models.CharField(max_length=100,verbose_name='Название Клуба')
-    description = models.TextField(verbose_name="Описание")
+    description = models.TextField(verbose_name="Описание",null=True)
     address = models.CharField(max_length=200,verbose_name="Адрес")
     city = models.CharField(max_length=100,verbose_name="Город")
-    district = models.CharField(max_length=100,verbose_name="Район")
-    postal_code = models.CharField(max_length=10,verbose_name="Почтовый Индекс")
+    district = models.CharField(max_length=100,verbose_name="Район",null=True)
+    postal_code = models.CharField(max_length=10,verbose_name="Почтовый Индекс",null=True)
     work_time_start = models.TimeField(verbose_name="Время Открытия")
     work_time_end = models.TimeField(verbose_name="Время Закрытия")
     x_size = models.IntegerField(verbose_name="Размер по X")
     y_size = models.IntegerField(verbose_name="Размер по Y")
+    longitude = models.DecimalField(max_digits=9, decimal_places=6,verbose_name="Долгота")
+    latitude = models.DecimalField(max_digits=9, decimal_places=6,verbose_name="Широта")
+    phone_number = models.CharField(max_length=15, blank=True, null=True,unique=True,verbose_name="Номер Телефона")
+    instagram_url = models.CharField(max_length=255,verbose_name="Instagram",null=True)
+    whatsapp_url = models.CharField(max_length=255,verbose_name="Whatsapp",null=True)
+    rating = models.DecimalField(max_digits=2, decimal_places=1,verbose_name="Рейтинг",default=0)
+    website = models.URLField(verbose_name="Сайт",null=True)
+    twogis_url = models.URLField(verbose_name="2gis",null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,verbose_name="Владелец")
     def __str__(self):
         return self.name + ' ' + self.address
 
 
 class ClubsComputer(models.Model):
-    computer_number = models.IntegerField()
-    is_near_to_next = models.BooleanField(default=False)
-    is_near_to_prev = models.BooleanField(default=False)
-    gpu = models.CharField(max_length=100)
-    cpu = models.CharField(max_length=100)
-    ram = models.CharField(max_length=100)
-    club = models.ForeignKey(Club, on_delete=models.CASCADE)
-    x_pos = models.IntegerField()
-    y_pos = models.IntegerField()
-    instance = models.ForeignKey('Instance', on_delete=models.SET_NULL, null=True)
-    is_active = models.BooleanField(default=True)
+    computer_number = models.IntegerField(verbose_name="Номер Компьютера")
+    is_near_to_next = models.BooleanField(default=False,verbose_name="Рядом с Следующим")
+    is_near_to_prev = models.BooleanField(default=False,verbose_name="Рядом с Предыдущим")
+    gpu = models.CharField(max_length=100,verbose_name="Видеокарта")
+    cpu = models.CharField(max_length=100,verbose_name="Процессор")
+    ram = models.CharField(max_length=100,verbose_name="Оперативная Память")
+    club = models.ForeignKey(Club, on_delete=models.CASCADE,verbose_name="Клуб")
+    x_pos = models.IntegerField(verbose_name="Позиция по X")
+    y_pos = models.IntegerField(verbose_name="Позиция по Y")
+    is_active = models.BooleanField(default=True,verbose_name="Активен")
+    instance = models.ForeignKey('Instance', on_delete=models.SET_NULL, null=True,verbose_name="Инстанс")
+
 
     def __str__(self):
         return f"Computer {self.computer_number} at {self.club.name}"
     
 
 class Appointment(models.Model):
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
-    is_active = models.BooleanField(default=True)
-    club_computer = models.ForeignKey(ClubsComputer, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    start_date = models.DateTimeField(verbose_name="Дата Начала")
+    end_date = models.DateTimeField(verbose_name="Дата Окончания")
+    is_active = models.BooleanField(default=True,verbose_name="Активен")
+    club_computer = models.ForeignKey(ClubsComputer, on_delete=models.CASCADE,verbose_name="Компьютер")
+    user = models.ForeignKey(User, on_delete=models.CASCADE,verbose_name="Пользователь")
 
 class UserMainTransaction(models.Model):
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    transaction_type = models.CharField(max_length=50)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2,verbose_name="Сумма")
+    transaction_type = models.CharField(max_length=50,verbose_name="Тип Транзакции")
+    user = models.ForeignKey(User, on_delete=models.CASCADE,verbose_name="Пользователь")
+    club = models.ForeignKey(Club, on_delete=models.CASCADE,verbose_name="Клуб")
 
 class UserBonusTransaction(models.Model):
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    transaction_type = models.CharField(max_length=50)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2,verbose_name="Сумма")
+    transaction_type = models.CharField(max_length=50,verbose_name="Тип Транзакции")
+    user = models.ForeignKey(User, on_delete=models.CASCADE,verbose_name="Пользователь")
+    club = models.ForeignKey(Club, on_delete=models.CASCADE,verbose_name="Клуб")
 
 class Instance(models.Model):
-    name = models.CharField(max_length=100)
-    icon_url = models.URLField()
+    name = models.CharField(max_length=100,verbose_name="Название")
+    icon_url = models.URLField(verbose_name="URL на иконку")
 
     def __str__(self):
         return self.name

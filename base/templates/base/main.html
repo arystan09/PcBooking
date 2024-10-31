@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kai Senet</title>
+    <title>{% block title %}Kai Senet{% endblock %}</title>
+
+    {% block css %}{% endblock %}
     <link rel="stylesheet" href="{% static 'styles/main.css' %}">
 </head>
 <body>
