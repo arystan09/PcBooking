@@ -1,0 +1,43 @@
+{% extends 'base/main.html' %}
+
+{%block content%}
+<head>
+    <title>All Computer Clubs</title>
+</head>
+<body onload="getUserLocation()">
+    <div id="club-list">
+        {%for club in clubs%}
+        <p>{{club.name}}, {{club.address}}</p>
+        {%endfor%}
+    </div>
+
+    <script>
+        function getUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sendLocationToServer);
+            } else {
+                document.getElementById('club-list').innerHTML = "<p>Geolocation is not supported by this browser.</p>";
+            }
+        }
+
+        function sendLocationToServer(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            // Send the location data to Django
+            fetch(`/get_nearest_clubs/?latitude=${latitude}&longitude=${longitude}`)
+            .then(response => response.json())
+            .then(data => {
+                // Render the sorted list of clubs
+                let clubListHTML = "<h2>Nearest Computer Clubs</h2><ul>";
+                data.forEach(club => {
+                    clubListHTML += `<li>${club.name}, ${club.address} - ${club.distance} km away</li>`;
+                });
+                clubListHTML += "</ul>";
+                document.getElementById('club-list').innerHTML = clubListHTML;
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+
+{%endblock%}

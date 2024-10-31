@@ -17,15 +17,17 @@ class User(AbstractUser):
         return self.username + ' ' +self.first_name + ' ' + self.last_name
 
 class Club(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    address = models.CharField(max_length=200)
-    work_time_start = models.TimeField()
-    work_time_end = models.TimeField()
-    x_size = models.IntegerField()
-    y_size = models.IntegerField()
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-
+    name = models.CharField(max_length=100,verbose_name='Название Клуба')
+    description = models.TextField(verbose_name="Описание")
+    address = models.CharField(max_length=200,verbose_name="Адрес")
+    city = models.CharField(max_length=100,verbose_name="Город")
+    district = models.CharField(max_length=100,verbose_name="Район")
+    postal_code = models.CharField(max_length=10,verbose_name="Почтовый Индекс")
+    work_time_start = models.TimeField(verbose_name="Время Открытия")
+    work_time_end = models.TimeField(verbose_name="Время Закрытия")
+    x_size = models.IntegerField(verbose_name="Размер по X")
+    y_size = models.IntegerField(verbose_name="Размер по Y")
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,verbose_name="Владелец")
     def __str__(self):
         return self.name + ' ' + self.address
 
