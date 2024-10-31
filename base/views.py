@@ -72,7 +72,8 @@ def sidebar(request):
 #example of full address
 #
 def geocode_address(address):
-    api_key = settings.OPENCAGE_API_KEY
+    # api_key = settings.OPENCAGE_API_KEY
+    api_key = ""
     url = f"https://api.opencagedata.com/geocode/v1/json?q={address}&key={api_key}"
     
     response = requests.get(url)
