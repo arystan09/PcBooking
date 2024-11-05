@@ -2,14 +2,13 @@
 {% load static %}
 {% block content %}
 
-<form method="get" action="{% url 'clubs' %}" class="search-form">
-    {{ search_form.as_p }}
-    <button type="submit" class="btn btn-primary">Search</button>
-    <a href="{% url 'clubs' %}" class="btn btn-secondary">Reset</a>
-</form>
-
 <div class="content-wrapper">
     <h2>All Computer Clubs</h2>
+    <form method="get" action="{% url 'clubs' %}" class="search-form">
+        {{ search_form.as_p }}
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a href="{% url 'clubs' %}" class="btn btn-secondary">Reset</a>
+    </form>
     <div id="club-list">
         {% for club in page_obj %}
         <div class="club-card">

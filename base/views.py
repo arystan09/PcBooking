@@ -130,7 +130,7 @@ def get_nearest_clubs(request):
 
 def list_computer_clubs(request):
     clubs = Club.objects.all()
-    paginator = Paginator(clubs, 10)  # Show 10 clubs per page
+    
 
     search_form = SearchForm(request.GET or None)
     
@@ -138,6 +138,7 @@ def list_computer_clubs(request):
         query = search_form.cleaned_data['query']
         if query:
             clubs = clubs.filter(Q (name__icontains=query) | Q(address__icontains=query))
+    paginator = Paginator(clubs, 10)  # Show 10 clubs per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
@@ -145,6 +146,7 @@ def list_computer_clubs(request):
         'search_form': search_form,
     }
     return render(request, 'base/allcompclubs.html', context)
+
 
 # class SearchResultView(ListView,FormView):
 #     model = Club
