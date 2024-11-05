@@ -23,6 +23,7 @@ env = environ.Env()
 env.read_env(env_file=BASE_DIR / '.env')
 
 OPENCAGE_API_KEY = env('OPENCAGE_API_KEY')
+GIS_API_KEY = env("2GIS_API_KEY")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/

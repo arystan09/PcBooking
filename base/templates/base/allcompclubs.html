@@ -30,7 +30,7 @@
             <div class="club-info">
                 <div class="club-address">{{ club.address }}, {{ club.city }}</div>
                 <div class="club-phone">{{ club.phone_number|default:"Not available" }}</div>
-                <div class="club-links">
+                {% comment %} <div class="club-links">
                     {% if club.instagram_url %}
                     <a href="{{ club.instagram_url }}" target="_blank">Instagram</a>
                     {% endif %}
@@ -43,17 +43,12 @@
                     {% if club.website %}
                     <a href="{{ club.website }}" target="_blank">Website</a>
                     {% endif %}
-                </div>
+                </div> {% endcomment %}
                 <div class="club-working-hours">
-                    {% if club.work_time_start|time:"H:i" == "00:00" and club.work_time_end|time:"H:i" == "23:59" %}
-                        24/7
-                    {% else %}
-                        {{ club.work_time_start|time:"H:i" }} - {{ club.work_time_end|time:"H:i" }}
-                    {% endif %}
+                    <p><strong>Working Hours: {{ club.display_working_hours }}</strong></p>
                 </div>
-                                {% comment %}  {% endcomment %}
                 <div>
-                    <a href="{% url 'clubs' %}"><button class="btn">Select PC Club</button></a>
+                    <a href="{% url 'detailed_club_view' club.id %}"><button class="btn">Select PC Club</button></a>
                 </div>
                 {% comment %}  {% endcomment %}
             </div>

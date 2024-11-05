@@ -11,4 +11,5 @@ urlpatterns = [
     path("profile/",views.user_profile,name="user-profile"),
     path("clubs/", views.list_computer_clubs, name="clubs"),
     path("upload_club_file/", views.upload_club_file, name="upload_club_file"),
+    path("clubs/<int:club_id>/",views.detailed_club_view,name="detailed_club_view"),
 ]

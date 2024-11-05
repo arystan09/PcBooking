@@ -4,6 +4,8 @@ import re
 from datetime import time
 from django.views.generic import ListView, CreateView, FormView, DetailView
 from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
+
 from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -130,7 +132,7 @@ def get_nearest_clubs(request):
 
 def list_computer_clubs(request):
     clubs = Club.objects.all()
-    paginator = Paginator(clubs, 10)  # Show 10 clubs per page
+    
 
     search_form = SearchForm(request.GET or None)
     
@@ -138,6 +140,7 @@ def list_computer_clubs(request):
         query = search_form.cleaned_data['query']
         if query:
             clubs = clubs.filter(Q (name__icontains=query) | Q(address__icontains=query))
+    paginator = Paginator(clubs, 10)  # Show 10 clubs per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
@@ -145,6 +148,15 @@ def list_computer_clubs(request):
         'search_form': search_form,
     }
     return render(request, 'base/allcompclubs.html', context)
+
+def detailed_club_view(request,club_id):
+    club = get_object_or_404(Club, id=club_id)
+    gis_api_key = settings.GIS_API_KEY
+    context = {
+        'club': club,
+        "gis_api_key": gis_api_key,
+    }
+    return render(request, 'base/clubdetailed.html', context)
 
 # class SearchResultView(ListView,FormView):
 #     model = Club

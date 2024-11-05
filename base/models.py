@@ -1,3 +1,4 @@
+from datetime import time
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -28,8 +29,8 @@ class Club(models.Model):
     work_time_end = models.TimeField(verbose_name="Время Закрытия")
     x_size = models.IntegerField(verbose_name="Размер по X")
     y_size = models.IntegerField(verbose_name="Размер по Y")
-    longitude = models.DecimalField(max_digits=9, decimal_places=6,verbose_name="Долгота")
-    latitude = models.DecimalField(max_digits=9, decimal_places=6,verbose_name="Широта")
+    longitude = models.DecimalField(max_digits=9, decimal_places=5,verbose_name="Долгота")
+    latitude = models.DecimalField(max_digits=9, decimal_places=5,verbose_name="Широта")
     phone_number = models.CharField(max_length=15, blank=True, null=True,unique=True,verbose_name="Номер Телефона")
     instagram_url = models.CharField(max_length=255,verbose_name="Instagram",null=True)
     whatsapp_url = models.CharField(max_length=255,verbose_name="Whatsapp",null=True)
@@ -37,10 +38,22 @@ class Club(models.Model):
     website = models.URLField(verbose_name="Сайт",null=True)
     twogis_url = models.URLField(verbose_name="2gis",null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,verbose_name="Владелец")
+    
     def __str__(self):
         return self.name + ' ' + self.address
+    
+    def display_working_hours(self):
+        # Define the 24/7 time range
+        twenty_four_seven_start = time(0, 0)      # 00:00
+        twenty_four_seven_end = time(23, 59)      # 23:59
 
-
+        if self.work_time_start == twenty_four_seven_start and self.work_time_end == twenty_four_seven_end:
+            return "круглосуточно"
+        else:
+            start_time = self.work_time_start.strftime('%H:%M')
+            end_time = self.work_time_end.strftime('%H:%M')
+            return f"{start_time} - {end_time}"
+        
 class ClubsComputer(models.Model):
     computer_number = models.IntegerField(verbose_name="Номер Компьютера")
     is_near_to_next = models.BooleanField(default=False,verbose_name="Рядом с Следующим")
