@@ -1,75 +1,94 @@
 {% extends 'base/main.html' %}
-{%load static%}
-{% comment %} {%block css%}
-<link rel="stylesheet" href="{% static 'css/allcompclubs.css' %}">
-{%endblock%} {% endcomment %}
+{% load static %}
 {% block content %}
-<div id="club-list">
+
+<form method="get" action="{% url 'clubs' %}" class="search-form">
+    {{ search_form.as_p }}
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a href="{% url 'clubs' %}" class="btn btn-secondary">Reset</a>
+</form>
+
+<div class="content-wrapper">
     <h2>All Computer Clubs</h2>
-    {% for club in clubs %}
-    <div class="club-card">
-        <div class="club-header">
-            <span class="club-name">{{ club.name }}</span>
-            <span class="club-rating">Rating: {{ club.rating }}/5</span>
-        </div>
-        <div class="club-info">
-            <div class="club-address">📍 {{ club.address }}, {{ club.city }}</div>
-            <div class="club-phone">📞 {{ club.phone_number|default:"Not available" }}</div>
-            <div class="club-links">
-                {% if club.instagram_url %}
-                <a href="{{ club.instagram_url }}" target="_blank">Instagram</a>
-                {% endif %}
-                {% if club.whatsapp_url %}
-                <a href="{{ club.whatsapp_url }}" target="_blank">WhatsApp</a>
-                {% endif %}
-                {% if club.twogis_url %}
-                <a href="{{ club.twogis_url }}" target="_blank">2GIS</a>
-                {% endif %}
-                {% if club.website %}
-                <a href="{{ club.website }}" target="_blank">Website</a>
-                {% endif %}
-                <button><a href="{% url 'book'%}">Book</a></button>
-                
+    <div id="club-list">
+        {% for club in page_obj %}
+        <div class="club-card">
+            <div class="club-header">
+                <span class="club-name">{{ club.name }}</span>
+                <span class="club-rating 
+                    {% if club.rating < 3 %}
+                        low-rating
+                    {% elif club.rating > 3.9 %}
+                        high-rating
+                    {% else %}
+                        medium-rating
+                    {% endif %}
+                ">
+                    Rating: {{ club.rating }}/5
+                </span>
             </div>
-            <div class="club-working-hours">🕒 {{ club.work_time_start|time:"H:i" }} - {{ club.work_time_end|time:"H:i" }}</div>
+            <div class="club-info">
+                <div class="club-address">{{ club.address }}, {{ club.city }}</div>
+                <div class="club-phone">{{ club.phone_number|default:"Not available" }}</div>
+                <div class="club-links">
+                    {% if club.instagram_url %}
+                    <a href="{{ club.instagram_url }}" target="_blank">Instagram</a>
+                    {% endif %}
+                    {% if club.whatsapp_url %}
+                    <a href="{{ club.whatsapp_url }}" target="_blank">WhatsApp</a>
+                    {% endif %}
+                    {% if club.twogis_url %}
+                    <a href="{{ club.twogis_url }}" target="_blank">2GIS</a>
+                    {% endif %}
+                    {% if club.website %}
+                    <a href="{{ club.website }}" target="_blank">Website</a>
+                    {% endif %}
+                </div>
+                <div class="club-working-hours">
+                    {% if club.work_time_start|time:"H:i" == "00:00" and club.work_time_end|time:"H:i" == "23:59" %}
+                        24/7
+                    {% else %}
+                        {{ club.work_time_start|time:"H:i" }} - {{ club.work_time_end|time:"H:i" }}
+                    {% endif %}
+                </div>
+                                {% comment %}  {% endcomment %}
+                <div>
+                    <a href="{% url 'clubs' %}"><button class="btn">Select PC Club</button></a>
+                </div>
+                {% comment %}  {% endcomment %}
+            </div>
         </div>
+        
+        {% endfor %}
     </div>
-    {% endfor %}
+
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% else %}
+            <span class="disabled">&laquo; first</span>
+            <span class="disabled">previous</span>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span class="current">{{ num }}</span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% else %}
+            <span class="disabled">next</span>
+            <span class="disabled">last &raquo;</span>
+            {% endif %}
+        </span>
+    </div>
 </div>
-
-<script>
-    function getUserLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(sendLocationToServer);
-        } else {
-            document.getElementById('club-list').innerHTML = "<p>Geolocation is not supported by this browser.</p>";
-        }
-    }
-
-    function sendLocationToServer(position) {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-
-        fetch(`/get_nearest_clubs/?latitude=${latitude}&longitude=${longitude}`)
-        .then(response => response.json())
-        .then(data => {
-            let clubListHTML = "<h2>Nearest Computer Clubs</h2>";
-            data.forEach(club => {
-                clubListHTML += `
-                <div class="club-card">
-                    <div class="club-header">
-                        <span class="club-name">${club.name}</span>
-                        <span class="club-rating">Rating: ${club.rating}/5</span>
-                    </div>
-                    <div class="club-info">
-                        <div class="club-address">📍 ${club.address}</div>
-                        <div class="club-distance">🚗 ${club.distance} km away</div>
-                    </div>
-                </div>`;
-            });
-            document.getElementById('club-list').innerHTML = clubListHTML;
-        })
-        .catch(error => console.error("Error:", error));
-    }
-</script>
 {% endblock %}

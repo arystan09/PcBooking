@@ -906,3 +906,196 @@ h2 {
     color: #333;
     margin-bottom: 20px;
 }
+
+
+/* clubs */
+
+.content-wrapper {
+    padding-top: 100px; 
+}
+
+
+.content-wrapper h2 {
+    font-size: 3.2rem;
+    color: #b74b4b;
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+#club-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2.5rem;
+}
+
+.club-card {
+    background: linear-gradient(135deg, #1e1e1e, #333333);
+    padding: 2rem;
+    border-radius: 1.2rem;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.club-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.6);
+}
+
+.club-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.club-name {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.club-rating {
+    font-size: 1.6rem;
+    color: #f1c40f;
+    font-weight: 600;
+}
+
+.club-info {
+    font-size: 1.4rem;
+    color: #dcdcdc;
+}
+
+.club-info .club-address,
+.club-info .club-phone,
+.club-info .club-working-hours,
+.club-info .club-distance {
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+}
+
+.club-info .club-address:before {
+    content: "📍";
+    margin-right: 0.5rem;
+}
+
+.club-info .club-phone:before {
+    content: "📞";
+    margin-right: 0.5rem;
+}
+
+.club-info .club-working-hours:before {
+    content: "🕒";
+    margin-right: 0.5rem;
+}
+
+.club-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.2rem;
+    flex-wrap: wrap;
+}
+
+.club-links a {
+    color: #b74b4b;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.club-links a:hover {
+    background: #b74b4b;
+    color: #fff;
+}
+
+/* Плавающий заголовок */
+.club-card:hover .club-header {
+    animation: float 1s ease-in-out infinite alternate;
+}
+
+@keyframes float {
+    to {
+        transform: translateY(-3px);
+    }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .content-wrapper h2 {
+        font-size: 2.5rem;
+    }
+
+    .club-card {
+        padding: 1.5rem;
+    }
+
+    .club-name {
+        font-size: 2rem;
+    }
+
+    .club-rating, .club-info {
+        font-size: 1.3rem;
+    }
+}
+
+/* styles/allcompclubs.css */
+
+/* Existing styles */
+/* Add your existing styles here */
+
+/* New styles for rating colors */
+.low-rating {
+    color: red;
+    font-weight: bold;
+}
+
+.medium-rating {
+    color: orange;
+    font-weight: bold;
+}
+
+.high-rating {
+    color: green;
+    font-weight: bold;
+}
+
+/* Optional: Hover effects for links */
+.club-links a {
+    margin-right: 10px;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.club-links a:hover {
+    text-decoration: underline;
+}
+
+/* Optional: Pagination styling */
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination .step-links {
+    display: inline-block;
+}
+
+.pagination a, .pagination span {
+    margin: 0 5px;
+    padding: 5px 10px;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.pagination .current {
+    font-weight: bold;
+    color: #000;
+}
+
+.pagination .disabled {
+    color: #ccc;
+}

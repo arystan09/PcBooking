@@ -2,9 +2,12 @@ import math
 import random
 import re
 from datetime import time
+from django.views.generic import ListView, CreateView, FormView, DetailView
 from django.http import JsonResponse
+from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.core.paginator import Paginator
 import requests
 from django.conf import settings
 from selenium import webdriver
@@ -72,7 +75,8 @@ def sidebar(request):
 #example of full address
 #
 def geocode_address(address):
-    api_key = settings.OPENCAGE_API_KEY
+    # api_key = settings.OPENCAGE_API_KEY
+    api_key = ""
     url = f"https://api.opencagedata.com/geocode/v1/json?q={address}&key={api_key}"
     
     response = requests.get(url)
@@ -126,8 +130,35 @@ def get_nearest_clubs(request):
 
 def list_computer_clubs(request):
     clubs = Club.objects.all()
-    context = {'clubs': clubs}
+    paginator = Paginator(clubs, 10)  # Show 10 clubs per page
+
+    search_form = SearchForm(request.GET or None)
+    
+    if search_form.is_valid():
+        query = search_form.cleaned_data['query']
+        if query:
+            clubs = clubs.filter(Q (name__icontains=query) | Q(address__icontains=query))
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context = {
+        'page_obj': page_obj,
+        'search_form': search_form,
+    }
     return render(request, 'base/allcompclubs.html', context)
+
+# class SearchResultView(ListView,FormView):
+#     model = Club
+#     template_name = 'library/search.html'
+#     context_object_name = 'books'
+#     form_class = BookSearchForm
+#     def get_queryset(self):
+#         query = self.request.GET.get('q')
+#         object_list = Books.objects.filter(Q(title__icontains=query) | Q(isbn__icontains=query)).order_by('title')
+#         return object_list
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         c_def = self.get_user_context(title='Search')
+#         return dict(list(context.items()) + list(c_def.items()))
 
 def home(request):
     return render(request, 'base/home.html')

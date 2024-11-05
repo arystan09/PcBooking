@@ -11,6 +11,8 @@ class User(AbstractUser):
     
     phone_number = models.CharField(max_length=15, blank=True, null=True,unique=True,verbose_name="Номер Телефона")
     role_id = models.ForeignKey(Role, on_delete=models.CASCADE, blank=True, null=True,verbose_name="Роль")
+    last_latitude = models.DecimalField(max_digits=9, decimal_places=6,verbose_name="Широта",null=True)
+    last_longitude = models.DecimalField(max_digits=9, decimal_places=6,verbose_name="Долгота",null=True)
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name

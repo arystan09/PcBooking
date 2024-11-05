@@ -20,7 +20,8 @@ import environ
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
-environ.Env.read_env(BASE_DIR / '.env')
+env.read_env(env_file=BASE_DIR / '.env')
+
 OPENCAGE_API_KEY = env('OPENCAGE_API_KEY')
 
 # Quick-start development settings - unsuitable for production
