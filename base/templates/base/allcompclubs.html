@@ -28,6 +28,8 @@
                 {% if club.website %}
                 <a href="{{ club.website }}" target="_blank">Website</a>
                 {% endif %}
+                <button><a href="{% url 'book'%}">Book</a></button>
+                
             </div>
             <div class="club-working-hours">🕒 {{ club.work_time_start|time:"H:i" }} - {{ club.work_time_end|time:"H:i" }}</div>
         </div>

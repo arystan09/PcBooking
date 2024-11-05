@@ -105,8 +105,8 @@ def get_nearest_clubs(request):
 
     for club in clubs:
         # Combine address, city, and country for geocoding
-        full_address = f"{club.address}, {club.city}, {club.country}"
-        lat, lon = geocode_address(full_address)
+        
+        lat, lon = club.latitude, club.longitude
 
         if lat is not None and lon is not None:
             # Calculate the distance between user and club
@@ -126,7 +126,8 @@ def get_nearest_clubs(request):
 
 def list_computer_clubs(request):
     clubs = Club.objects.all()
-    return render(request, 'base/allcompclubs.html', {'clubs': clubs})
+    context = {'clubs': clubs}
+    return render(request, 'base/allcompclubs.html', context)
 
 def home(request):
     return render(request, 'base/home.html')
@@ -173,7 +174,6 @@ from openpyxl import load_workbook as lw
 
 def upload_club_file(request):
     if request.method == "POST":
-        # Use .get() to safely check for 'file' in request.FILES
         uploaded_file = request.FILES.get('file', None)
         
         if not uploaded_file:
