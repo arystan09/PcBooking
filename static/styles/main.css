@@ -1042,12 +1042,93 @@ h2 {
     }
 }
 
-/* styles/allcompclubs.css */
+/* search bar */
+.search-form {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+}
 
-/* Existing styles */
-/* Add your existing styles here */
+.search-form input[type="text"] {
+    padding: 0.8rem 1.2rem;
+    border-radius: 5px;
+    border: 1px solid #b74b4b;
+    font-size: 1.4rem;
+    background-color: #1e1e1e;
+    color: #fff;
+}
 
-/* New styles for rating colors */
+.search-form input[type="text"]::placeholder {
+    color: #aaa;
+}
+
+.search-form .btn-primary {
+    background-color: #b74b4b;
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    font-size: 1.4rem;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.search-form .btn-primary:hover {
+    background-color: #d35757;
+}
+
+.search-form .btn-secondary {
+    background-color: #555;
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    font-size: 1.4rem;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.search-form .btn-secondary:hover {
+    background-color: #777;
+}
+
+/* pagination only for beka <3 */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    font-size: 1.4rem;
+}
+
+.pagination .step-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.pagination a, .pagination .current, .pagination .disabled {
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.pagination a:hover {
+    background-color: #555;
+}
+
+.pagination .current {
+    background-color: #b74b4b;
+    font-weight: bold;
+}
+
+.pagination .disabled {
+    background-color: #444;
+    color: #888;
+}
 .low-rating {
     color: red;
     font-weight: bold;
@@ -1061,41 +1142,4 @@ h2 {
 .high-rating {
     color: green;
     font-weight: bold;
-}
-
-/* Optional: Hover effects for links */
-.club-links a {
-    margin-right: 10px;
-    text-decoration: none;
-    color: #007bff;
-}
-
-.club-links a:hover {
-    text-decoration: underline;
-}
-
-/* Optional: Pagination styling */
-.pagination {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.pagination .step-links {
-    display: inline-block;
-}
-
-.pagination a, .pagination span {
-    margin: 0 5px;
-    padding: 5px 10px;
-    text-decoration: none;
-    color: #007bff;
-}
-
-.pagination .current {
-    font-weight: bold;
-    color: #000;
-}
-
-.pagination .disabled {
-    color: #ccc;
 }

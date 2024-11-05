@@ -133,6 +133,7 @@ def get_nearest_clubs(request):
 def list_computer_clubs(request):
     clubs = Club.objects.all()
     
+    
 
     search_form = SearchForm(request.GET or None)
     
