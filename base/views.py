@@ -1,3 +1,4 @@
+import json
 import math
 import random
 import re
@@ -91,49 +92,69 @@ def geocode_address(address):
     else:
         return None, None
     
-
 def haversine(lat1, lon1, lat2, lon2):
-    # Radius of the Earth in kilometers
-    R = 6371.0
+    """
+    Calculate the great-circle distance between two points on the Earth surface.
+    Returns distance in kilometers.
+    """
+    R = 6371  # Earth radius in kilometers
 
-    dlat = math.radians(lat2 - lat1)
-    dlon = math.radians(lon2 - lon1)
-    a = math.sin(dlat / 2) ** 2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2
+    phi1 = math.radians(lat1)
+    phi2 = math.radians(lat2)
+
+    delta_phi = math.radians(lat2 - lat1)
+    delta_lambda = math.radians(lon2 - lon1)
+
+    a = math.sin(delta_phi / 2.0)**2 + \
+        math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2.0)**2
+
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    return R * c
 
-def get_nearest_clubs(request):
-    user_lat = float(request.GET.get('latitude'))
-    user_lon = float(request.GET.get('longitude'))
+    meters = R * c
+    return meters
 
-    clubs = Club.objects.all()
-    club_distances = []
+# def get_nearest_clubs(request):
+#     user_lat = float(request.GET.get('latitude'))
+#     user_lon = float(request.GET.get('longitude'))
 
-    for club in clubs:
-        # Combine address, city, and country for geocoding
+#     clubs = Club.objects.all()
+#     club_distances = []
+
+#     for club in clubs:
+#         # Combine address, city, and country for geocoding
         
-        lat, lon = club.latitude, club.longitude
+#         lat, lon = club.latitude, club.longitude
 
-        if lat is not None and lon is not None:
-            # Calculate the distance between user and club
-            distance = haversine(user_lat, user_lon, lat, lon)
-            club_distances.append({
-                'name': club.name,
-                'address': club.address,
-                'city': club.city,
-                'country': "Kazakhstan",
-                'distance': round(distance, 2)
-            })
+#         if lat is not None and lon is not None:
+#             # Calculate the distance between user and club
+#             distance = haversine(user_lat, user_lon, lat, lon)
+#             club_distances.append({
+#                 'name': club.name,
+#                 'address': club.address,
+#                 'city': club.city,
+#                 'country': "Kazakhstan",
+#                 'distance': round(distance, 2)
+#             })
 
-    # Sort by distance
-    sorted_clubs = sorted(club_distances, key=lambda x: x['distance'])
+#     # Sort by distance
+#     sorted_clubs = sorted(club_distances, key=lambda x: x['distance'])
 
-    return JsonResponse(sorted_clubs, safe=False)
-
+#     return JsonResponse(sorted_clubs, safe=False)
+from haversine import haversine, Unit
 def list_computer_clubs(request):
     clubs = Club.objects.all()
-    
-    
+    latitude = None
+    longitude = None
+    radius = None
+    if request.method == "POST":
+        if "latitude" and "longitude" in request.POST:
+
+            data = json.loads(request.body)
+            latitude = data.get('latitude')
+            longitude = data.get('longitude')
+            radius = request.GET.get('radius')
+
+        
 
     search_form = SearchForm(request.GET or None)
     
@@ -141,7 +162,19 @@ def list_computer_clubs(request):
         query = search_form.cleaned_data['query']
         if query:
             clubs = clubs.filter(Q (name__icontains=query) | Q(address__icontains=query))
-    paginator = Paginator(clubs, 10)  # Show 10 clubs per page
+
+    distance = {}
+    if latitude and longitude:
+        user = request.user
+        user.last_latitude = latitude
+        user.last_longitude = longitude
+        user.save()
+        # user_location = Point(float(longitude), float(latitude), srid=4326)
+        
+        
+        print(f"res: {latitude}, {longitude}")
+            
+    paginator = Paginator(clubs, 8)  # Show 10 clubs per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {

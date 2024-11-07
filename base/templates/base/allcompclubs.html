@@ -9,6 +9,10 @@
         <button type="submit" class="btn btn-primary">Search</button>
         <a href="{% url 'clubs' %}" class="btn btn-secondary">Reset</a>
     </form>
+    <div>
+        {% csrf_token %}
+        <button id="save-location" type="button">Show Clubs near</button>
+    </div>
     <div id="club-list">
         {% for club in page_obj %}
         <div class="club-card">
@@ -85,4 +89,94 @@
         </span>
     </div>
 </div>
+
+<script>
+    // clubs.js
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Function to get CSRF token from cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    
+    
+        const saveLocationButton = document.getElementById('save-location');
+        
+        saveLocationButton.addEventListener('click', function() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(sendLocation);
+                    console.log("navigator.geolocation.getCurrentPosition(sendLocation)");
+                } else {
+                    alert('Geolocation is not supported by your browser.');
+                }
+            });
+         
+    
+        function sendLocation(position) {
+            const csrftoken = '{{ csrf_token }}'
+
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            console.log(latitude, longitude);
+            fetch('{% url "clubs" %}', {  // Ensure this URL matches your Django URL configuration
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: JSON.stringify({ latitude: latitude, longitude: longitude }),
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                if (!response.ok) {
+                    // Attempt to parse the error message from the response
+                    return response.text().then(text => { throw new Error(text) });
+                }
+                // Return the parsed JSON data
+                //return response.json();
+            })
+            .then(data => {
+                console.log('Received data:', data); // For debugging
+                if (data.success) {
+                    alert('Location saved successfully!');
+                } else {
+                    alert('Failed to save location: ' + (data.error || 'Unknown error.'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while saving location: ' + error.message);
+            });
+        }
+    
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+    });
+    </script>
 {% endblock %}

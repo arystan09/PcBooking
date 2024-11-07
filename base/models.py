@@ -9,12 +9,11 @@ class Role(models.Model):
         return self.name
 
 class User(AbstractUser):
-    
     phone_number = models.CharField(max_length=15, blank=True, null=True,unique=True,verbose_name="Номер Телефона")
     role_id = models.ForeignKey(Role, on_delete=models.CASCADE, blank=True, null=True,verbose_name="Роль")
     last_latitude = models.DecimalField(max_digits=9, decimal_places=6,verbose_name="Широта",null=True)
     last_longitude = models.DecimalField(max_digits=9, decimal_places=6,verbose_name="Долгота",null=True)
-
+    balance = models.DecimalField(max_digits=10, decimal_places=2,verbose_name="Баланс",default=0)
     def __str__(self):
         return self.first_name + ' ' + self.last_name
 
@@ -48,12 +47,19 @@ class Club(models.Model):
         twenty_four_seven_end = time(23, 59)      # 23:59
 
         if self.work_time_start == twenty_four_seven_start and self.work_time_end == twenty_four_seven_end:
-            return "круглосуточно"
+            return "24/7"
         else:
             start_time = self.work_time_start.strftime('%H:%M')
             end_time = self.work_time_end.strftime('%H:%M')
             return f"{start_time} - {end_time}"
-        
+
+class ClubImage(models.Model):
+    club = models.ForeignKey(Club, on_delete=models.CASCADE,verbose_name="Клуб",related_name='images')
+    image = models.ImageField(upload_to='club_images/',verbose_name="Изображение")
+
+    def __str__(self):
+        return f"Images of {self.club.name}"
+    
 class ClubsComputer(models.Model):
     computer_number = models.IntegerField(verbose_name="Номер Компьютера")
     is_near_to_next = models.BooleanField(default=False,verbose_name="Рядом с Следующим")
