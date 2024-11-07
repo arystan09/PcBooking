@@ -1,4 +1,3 @@
-<!-- templates/base/club_detail.html -->
 
 {% extends 'base/main.html' %}
 {% load static %}
@@ -7,132 +6,64 @@
 {{ club.name }} - Details
 {% endblock %}
 
-
 {% block content %}
-<!-- 2GIS JavaScript Integration -->
-{% comment %} <script src="https://maps.api.2gis.com/2.0/loader.js"></script> {% endcomment %}
-<div class="container my-5">
-    <div class="card shadow-lg">
-        <div class="row g-0">
-            <!-- Club Image Section -->
-            <div class="col-md-5">
-                {% if club.images.all %}
-                <!-- Image Carousel -->
-                <div id="clubCarousel" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        {% for image in club.images.all %}
-                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                            <img src="{{ image.image.url }}" class="d-block w-100" alt="{{ club.name }} Image {{ forloop.counter }}">
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#clubCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#clubCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
-                {% else %}
-                <img src="{% static 'images/default_club.jpg' %}" class="img-fluid rounded-start" alt="Default Club Image">
-                {% endif %}
+{% include 'base/book.html' %}
+
+<section class = "each-club">
+    <div id="club-list">
+        <!-- Club Card -->
+        <div class="club-card">
+            <div class="club-header">
+                <span class="club-name">{{ club.name }}</span>
+                <span class="club-rating">
+                    ⭐ {{ club.rating }}/5
+                </span>
             </div>
-            <!-- Club Details Section -->
-            <div class="col-md-7">
-                <div class="card-body">
-                    <h3 class="card-title">{{ club.name }}</h3>
-                    <p class="card-text">{{ club.description }}</p>
-                    
-                    <!-- Rating -->
-                    <p class="card-text">
-                        <strong>Rating:</strong>
-                        <span class="badge 
-                            {% if club.rating < 3 %}
-                                bg-danger
-                            {% elif club.rating > 3.9 %}
-                                bg-success
-                            {% else %}
-                                bg-warning text-dark
-                            {% endif %}
-                        ">
-                            {{ club.rating }}/5
-                        </span>
-                    </p>
-                    
-                    <!-- Address -->
-                    <p class="card-text"><strong>Address:</strong> {{ club.address }}, {{ club.city }}, {{ club.district }}</p>
-                    
-                    
-                    <!-- Phone Number -->
-                    <p class="card-text"><strong>Phone:</strong> 
-                        {% if club.phone_number %}
-                            <a href="tel:{{ club.phone_number }}">{{ club.phone_number }}</a>
-                        {% else %}
-                            Not available
-                        {% endif %}
-                    </p>
-                    
-                    <!-- Social Media Links -->
-                    <p class="card-text"><strong>Connect:</strong>
-                        {% if club.instagram_url %}
-                            <a href="{{ club.instagram_url }}" target="_blank" class="btn btn-outline-primary btn-sm me-2">
-                                <i class="bi bi-instagram"></i> Instagram
-                            </a>
-                        {% endif %}
-                        {% if club.whatsapp_url %}
-                            <a href="{{ club.whatsapp_url }}" target="_blank" class="btn btn-outline-success btn-sm me-2">
-                                <i class="bi bi-whatsapp"></i> WhatsApp
-                            </a>
-                        {% endif %}
-                        {% if club.twogis_url %}
-                            <a href="{{ club.twogis_url }}" target="_blank" class="btn btn-outline-secondary btn-sm me-2">
-                                <i class="bi bi-map"></i> 2GIS
-                            </a>
-                        {% endif %}
-                        {% if club.website %}
-                            <a href="{{ club.website }}" target="_blank" class="btn btn-outline-info btn-sm">
-                                <i class="bi bi-globe"></i> Website
-                            </a>
-                        {% endif %}
-                    </p>
-                    
-                    <!-- Working Hours -->
-                    <p class="card-text"><strong>Working Hours:</strong> {{ club.display_working_hours }}</p>
-                    
-                    <!-- 2GIS Map Integration -->
-            <script src="https://mapgl.2gis.com/api/js/v1"></script>
-
-            <div id="container"></div>
-
-            <script>
-                // Initialize the map
-                const map = new mapgl.Map('container', {
-                    center: [{{club.longitude}}, {{club.latitude}}], // [longitude, latitude]
-                    zoom: 13,
-                    key: "{{gis_api_key}}", // Replace with your actual API key
-                });
-
-                const marker = new mapgl.Marker(map, {
-                    coordinates: [{{club.longitude}}, {{club.latitude}}],
-                    icon: 'https://docs.2gis.com/img/mapgl/marker.svg',
-                });
-                
-
-                
-            </script>
+            
+            <div class="club-info">
+                <div class="club-address">{{ club.address }}, {{ club.city }}, {{ club.district }}</div>
+                <div class="club-phone">
+                    {% if club.phone_number %}
+                        <a href="tel:{{ club.phone_number }}">{{ club.phone_number }}</a>
+                    {% else %}
+                        Not available
+                    {% endif %}
                 </div>
+                <div class="club-working-hours">{{ club.display_working_hours }}</div>
+            </div>
+            
+            <!-- Links to social media and other resources -->
+            <div class="club-links">
+                {% if club.instagram_url %}
+                    <a href="{{ club.instagram_url }}" target="_blank">Instagram</a>
+                {% endif %}
+                {% if club.whatsapp_url %}
+                    <a href="{{ club.whatsapp_url }}" target="_blank">WhatsApp</a>
+                {% endif %}
+                {% if club.twogis_url %}
+                    <a href="{{ club.twogis_url }}" target="_blank">2GIS</a>
+                {% endif %}
+                {% if club.website %}
+                    <a href="{{ club.website }}" target="_blank">Website</a>
+                {% endif %}
             </div>
         </div>
     </div>
-    {% include 'base/book.html' %}
-    <!-- Back to List Button -->
-    <div class="mt-4">
-        <a href="{% url 'clubs' %}" class="btn btn-secondary">← Back to All Clubs</a>
-    </div>
     
-    
-    
-</div>
+</section>
+   <!-- 2GIS Map Integration -->
+   <div id="container" style="width: 100%; height: 300px; margin-top: 20px; border-radius: 10px;"></div>
+   <script src="https://mapgl.2gis.com/api/js/v1"></script>
+   <script>
+       const map = new mapgl.Map('container', {
+           center: [{{ club.longitude }}, {{ club.latitude }}],
+           zoom: 13,
+           key: "{{ gis_api_key }}",
+       });
+
+       const marker = new mapgl.Marker(map, {
+           coordinates: [{{ club.longitude }}, {{ club.latitude }}],
+           icon: 'https://docs.2gis.com/img/mapgl/marker.svg',
+       });
+   </script>
 {% endblock %}
