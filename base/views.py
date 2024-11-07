@@ -14,13 +14,14 @@ from django.core.paginator import Paginator
 import requests
 from django.conf import settings
 from selenium import webdriver
-from .models import Club
+from .models import Club, User
 from .forms import *
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.admin import AdminSite
 from django.contrib import admin 
 from django.utils.text import capfirst
 from django.contrib import messages
+
 
 def sidebar(request):
     admin_site = AdminSite()
@@ -191,6 +192,16 @@ def detailed_club_view(request,club_id):
         "gis_api_key": gis_api_key,
     }
     return render(request, 'base/clubdetailed.html', context)
+
+def dashboard(request):
+    user_profile = User.objects.get(user=request.user)
+    # upcoming_bookings = Booking.objects.filter(user=request.user, date__gte=timezone.now()).order_by('date')
+
+    context = {
+        'user_profile': user_profile,
+        # 'upcoming_bookings': upcoming_bookings,
+    }
+    return render(request, 'dashboard.html', context)
 
 # class SearchResultView(ListView,FormView):
 #     model = Club

@@ -130,7 +130,6 @@ class Instance(models.Model):
 #     def __str__(self):
 #         return self.username
 
-
 # class Booking(models.Model):
 #     user = models.ForeignKey(User, on_delete=models.CASCADE)
 #     club = models.ForeignKey(Club, on_delete=models.CASCADE)
@@ -140,7 +139,7 @@ class Instance(models.Model):
 #     is_confirmed = models.BooleanField(default=False)
 
 #     def __str__(self):
-#         return self.username
+#       return self.username
 
 
 # class Transaction(models.Model):

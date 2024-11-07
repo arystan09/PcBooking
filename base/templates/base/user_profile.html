@@ -2,5 +2,49 @@
 
 
 {% block content %}
-<h1>User Profile</h1>
+<section class="dashboard">
+    <div class="dashboard-header">
+        <h1>Welcome, {{ user.username }}!</h1>
+        <p>Your Balance: <span class="balance">${{ user_profile.balance|floatformat:2 }}</span></p>
+        <p>Bonus Points: <span class="bonus">{{ user_profile.bonus_points }}</span></p>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="dashboard-section">
+            <h2>Account Information</h2>
+            <ul>
+                <li><strong>Email:</strong> {{ user.email }}</li>
+                <li><strong>Account Created:</strong> {{ user.date_joined|date:"F j, Y" }}</li>
+                <li><strong>Last Login:</strong> {{ user.last_login|date:"F j, Y, g:i a" }}</li>
+            </ul>
+        </div>
+
+        <div class="dashboard-section">
+            <h2>Recent Operations</h2>
+            <ul>
+                {% for operation in recent_operations %}
+                    <li>{{ operation.date|date:"F j, Y" }} - {{ operation.description }} - ${{ operation.amount|floatformat:2 }}</li>
+                {% empty %}
+                    <li>No recent operations.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="dashboard-section">
+            <h2>Past Visits</h2>
+            <div class="visits">
+                {% for visit in past_visits %}
+                    <div class="visit-item">
+                        <h3>{{ visit.club_name }}</h3>
+                        <p><strong>Date:</strong> {{ visit.date|date:"F j, Y" }}</p>
+                        <p><strong>Computer:</strong> {{ visit.computer_number }}</p>
+                    </div>
+                {% empty %}
+                    <p>No past visits.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</section>
 {%endblock%}
