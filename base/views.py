@@ -6,7 +6,7 @@ from datetime import time
 from django.views.generic import ListView, CreateView, FormView, DetailView
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
-
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -114,34 +114,8 @@ def haversine(lat1, lon1, lat2, lon2):
     meters = R * c
     return meters
 
-# def get_nearest_clubs(request):
-#     user_lat = float(request.GET.get('latitude'))
-#     user_lon = float(request.GET.get('longitude'))
-
-#     clubs = Club.objects.all()
-#     club_distances = []
-
-#     for club in clubs:
-#         # Combine address, city, and country for geocoding
-        
-#         lat, lon = club.latitude, club.longitude
-
-#         if lat is not None and lon is not None:
-#             # Calculate the distance between user and club
-#             distance = haversine(user_lat, user_lon, lat, lon)
-#             club_distances.append({
-#                 'name': club.name,
-#                 'address': club.address,
-#                 'city': club.city,
-#                 'country': "Kazakhstan",
-#                 'distance': round(distance, 2)
-#             })
-
-#     # Sort by distance
-#     sorted_clubs = sorted(club_distances, key=lambda x: x['distance'])
-
-#     return JsonResponse(sorted_clubs, safe=False)
 from haversine import haversine, Unit
+
 def list_computer_clubs(request):
     clubs = Club.objects.all()
     latitude = None
@@ -149,23 +123,19 @@ def list_computer_clubs(request):
     radius = None
     if request.method == "POST":
         if "latitude" and "longitude" in request.POST:
-
             data = json.loads(request.body)
             latitude = data.get('latitude')
             longitude = data.get('longitude')
             radius = request.GET.get('radius')
-
-        
-
+            print(latitude, longitude)
     search_form = SearchForm(request.GET or None)
-    
     if search_form.is_valid():
         query = search_form.cleaned_data['query']
         if query:
             clubs = clubs.filter(Q (name__icontains=query) | Q(address__icontains=query))
 
     distance = {}
-    if latitude and longitude:
+    if latitude is not None and longitude is not None:
         user = request.user
         user.last_latitude = latitude
         user.last_longitude = longitude
@@ -191,39 +161,37 @@ def detailed_club_view(request,club_id):
         'club': club,
         "gis_api_key": gis_api_key,
     }
+
     return render(request, 'base/clubdetailed.html', context)
 
-def dashboard(request):
-    user_profile = User.objects.get(user=request.user)
-    # upcoming_bookings = Booking.objects.filter(user=request.user, date__gte=timezone.now()).order_by('date')
-
-    context = {
-        'user_profile': user_profile,
-        # 'upcoming_bookings': upcoming_bookings,
-    }
-    return render(request, 'dashboard.html', context)
-
-# class SearchResultView(ListView,FormView):
-#     model = Club
-#     template_name = 'library/search.html'
-#     context_object_name = 'books'
-#     form_class = BookSearchForm
-#     def get_queryset(self):
-#         query = self.request.GET.get('q')
-#         object_list = Books.objects.filter(Q(title__icontains=query) | Q(isbn__icontains=query)).order_by('title')
-#         return object_list
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         c_def = self.get_user_context(title='Search')
-#         return dict(list(context.items()) + list(c_def.items()))
+# def dashboard(request):
+#     user_profile = User.objects.get(user=request.user)
+#     # upcoming_bookings = Booking.objects.filter(user=request.user, date__gte=timezone.now()).order_by('date')
+#     context = {
+#         'user_profile': user_profile,
+#         # 'upcoming_bookings': upcoming_bookings,
+#     }
+#     return render(request, 'dashboard.html', context)
 
 def home(request):
     return render(request, 'base/home.html')
 
 
-def book(request):
-    return render(request, 'base/book.html')
+# def book(request):
+#     return render(request, 'base/book.html')
     
+
+def update_user_profile(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    current_user = User.objects.get(id=request.user.id)
+    form = RegisterForm(request.POST or None,instance=current_user)
+    if form.is_valid():
+        form.save()
+        return redirect('user-profile')
+    
+    return render(request, "base/update_user_profile.html",{ 'form': form})
+
 
 def register(request):
     form = RegisterForm()
@@ -256,6 +224,8 @@ def logout_user(request):
     return redirect('login')
 
 def user_profile(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
     return render(request, 'base/user_profile.html')
 
 from openpyxl import load_workbook as lw

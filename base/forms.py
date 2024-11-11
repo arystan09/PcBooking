@@ -21,5 +21,3 @@ class SearchForm(forms.Form):
             'class': 'form-control',
         })
     )
-    
-

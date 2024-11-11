@@ -1,11 +1,12 @@
 {% extends 'base/main.html' %}
 {% load static %}
 
-{% block title %}Registration{% endblock %}
+
+{% block title %}Update User{% endblock %}
 {% block content %}
 <div class="page-wrapper">
     <div class="register-container">
-        <h1>Registration</h1>
+        <h1>Update</h1>
         <form method="post">
             {% csrf_token %}
             {% for f in form %}
@@ -15,10 +16,9 @@
                     <div class="form-error">{{ f.errors }}</div>
                 </div>
             {% endfor %}
-            <button type="submit" class="btn-register2">Register</button>
+            <button type="submit" class="btn-register2">Save</button>
         </form>
-        <p class="login-prompt">Already have an account?</p>
-        <a href="{% url 'login' %}" class="btn-login-link">Login</a>
     </div>
 </div>
-{% endblock %}
+
+{%endblock%}

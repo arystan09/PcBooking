@@ -56,13 +56,14 @@
    <script src="https://mapgl.2gis.com/api/js/v1"></script>
    <script>
        const map = new mapgl.Map('container', {
-           center: [{{ club.longitude }}, {{ club.latitude }}],
+           center: [{{ club.latitude }}, {{ club.longitude }}],
+           
            zoom: 13,
            key: "{{ gis_api_key }}",
        });
 
        const marker = new mapgl.Marker(map, {
-           coordinates: [{{ club.longitude }}, {{ club.latitude }}],
+           coordinates: [{{ club.latitude }}, {{ club.longitude }}],
            icon: 'https://docs.2gis.com/img/mapgl/marker.svg',
        });
    </script>
